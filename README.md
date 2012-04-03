@@ -12,4 +12,4 @@ The HumusBase module is a set of common classes used by other Humus Modules.
   - [DoctrineORMModule](https://github.com/doctrine/DoctrineORMModule)
 
 ## Installation
-See the [INSTALL.md](http://www.github.com/doctrine/DoctrineModule/tree/master/docs/INSTALL.md) file.
+See the [INSTALL.md](http://www.github.com/prolic/HumusBase/tree/master/docs/INSTALL.md) file.
