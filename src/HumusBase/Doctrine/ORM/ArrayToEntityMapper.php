@@ -1,16 +1,17 @@
 <?php
 
-namespace HumusBase\Doctrine\ArrayToObjectMapper;
+namespace HumusBase\Doctrine\ORM;
 
-use HumusBase\Doctrine\ArrayToObjectMapper\Exception\InvalidArgumentException,
+use HumusBase\Doctrine\Common\ArrayToObjectMapper,
     Doctrine\ORM\EntityManager,
+    Doctrine\ORM\ORMInvalidArgumentException as InvalidArgumentException,
     Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\Common\NotifyPropertyChanged,
     Doctrine\Common\Collections\Collection,
     DateTime,
     ReflectionProperty;
 
-class ArrayToEntityMapper implements ArrayToObjectMapperInterface
+class ArrayToEntityMapper implements ArrayToObjectMapper
 {
 
     /**
@@ -32,17 +33,17 @@ class ArrayToEntityMapper implements ArrayToObjectMapperInterface
     /**
      * Get entity from array
      *
-     * @param string $entityName
+     * @param string $entityClassName
      * @param array $data
      * @param bool $clone
      * @return object
      * @throws InvalidArgumentException
      */
-    public function getEntityFromArray($entityName, array $data, $clone = false)
+    public function getObjectFromArray($entityClassName, array $data, $clone = false)
     {
-        $this->validateEntityName($entityName);
-        $meta = $this->getEntityManager()->getClassMetadata($entityName);
-        $entity = $this->loadEntity($entityName, $data, $clone);
+        $this->validateEntityClassName($entityClassName);
+        $meta = $this->getEntityManager()->getClassMetadata($entityClassName);
+        $entity = $this->loadEntity($entityClassName, $data, $clone);
         $identifier = array_shift($meta->getIdentifier());
         foreach ($data as $field => $value) {
             if ($field == $identifier
@@ -79,7 +80,7 @@ class ArrayToEntityMapper implements ArrayToObjectMapperInterface
      * @throws InvalidArgumentException
      * @return void
      */
-    protected function validateEntityName($entityName)
+    protected function validateEntityClassName($entityName)
     {
         if (!class_exists($entityName)) {
             throw new InvalidArgumentException('Class ' .$entityName . ' not found');
