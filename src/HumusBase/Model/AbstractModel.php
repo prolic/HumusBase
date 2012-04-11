@@ -4,7 +4,8 @@ namespace HumusBase\Model;
 
 use Zend\Stdlib\ArrayUtils,
     Doctrine\Common\Collections\Collection,
-    DateTime;
+    DateTime,
+    InvalidArgumentException;
 
 abstract class AbstractModel
 {
@@ -77,7 +78,9 @@ abstract class AbstractModel
     }
 
     /**
-     * @param $data
+     * Flat single keys
+     *
+     * @param array|null $data
      * @return array
      */
     protected function flatSingleKeys($data)
@@ -121,6 +124,11 @@ abstract class AbstractModel
         return 'get' . static::toCamelCase($name);
     }
 
+    public static function fieldToSetterMethod($name)
+    {
+        return 'set' . static::toCamelCase($name);
+    }
+
     /**
      * Convert to camel case
      *
@@ -141,5 +149,38 @@ abstract class AbstractModel
     public static function fromCamelCase($name)
     {
         return trim(preg_replace_callback('/([A-Z])/', function($c){ return '_'.strtolower($c[1]); }, $name),'_');
+    }
+
+    /**
+     * Convert an array to an instance of a model class
+     *
+     * @param array $array
+     * @return AbstractModel
+     */
+    public static function fromArray($array)
+    {
+        if (!ArrayUtils::hasStringKeys($array)) {
+            throw new InvalidArgumentException('ModelAbstract::fromArray() expects associative array.');
+        }
+        $model = new static();
+        $model->exchangeArray($array);
+        return $model;
+    }
+
+    /**
+     * Exchange array
+     *
+     * @param array|\Traversable $array
+     * @return void
+     */
+    public function exchangeArray($array) {
+        foreach ($array as $key => $value) {
+            $setter = static::fieldToSetterMethod($key);
+            if (is_callable(array($this, $setter))) {
+                $this->$setter($value);
+            } else if (property_exists(get_called_class(), $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 }
