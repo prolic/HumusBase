@@ -4,7 +4,7 @@ This module is deprecated in favour of ZfcBase.
 
 The HumusBase module is a set of common classes used by other Humus Modules.
 
-  - ArrayToObjectMapper (deprecated, see HumusDoctrineHydrato at https://github.com/prolic/HumusDoctrineHydrator)
+  - ArrayToObjectMapper (deprecated, see HumusDoctrineHydrator at https://github.com/prolic/HumusDoctrineHydrator)
   - StaticListenerAggregates (deprecated, use SharedEventManager instead)
   - AbstractModel (deprecated, we have hydrators)
   - Util String
